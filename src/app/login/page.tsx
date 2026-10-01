@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -19,13 +20,13 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
+    const { error: loginError } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
       password,
     });
 
-    if (error) {
-      setError(error.message);
+    if (loginError) {
+      setError(loginError.message);
       setLoading(false);
       return;
     }
@@ -35,12 +36,14 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center px-4">
+    <main className="flex min-h-screen items-center justify-center px-4 py-12">
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-md rounded-2xl border border-border bg-surface p-8 shadow-sm"
       >
-        <h1 className="text-2xl font-semibold tracking-tight">Welcome back.</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">
+          Welcome back.
+        </h1>
 
         <p className="mt-2 text-sm text-muted">
           Sign in to continue your fitness journey.
@@ -65,9 +68,7 @@ export default function LoginPage() {
             className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-border-strong"
           />
 
-          {error && (
-            <p className="text-sm text-danger">{error}</p>
-          )}
+          {error && <p className="text-sm text-danger">{error}</p>}
 
           <button
             type="submit"
@@ -76,6 +77,16 @@ export default function LoginPage() {
           >
             {loading ? "Signing in..." : "Sign in"}
           </button>
+
+          <p className="text-center text-sm text-muted">
+            New to Sinetr?{" "}
+            <Link
+              href="/signup"
+              className="font-semibold text-foreground hover:underline"
+            >
+              Create an account
+            </Link>
+          </p>
         </div>
       </form>
     </main>

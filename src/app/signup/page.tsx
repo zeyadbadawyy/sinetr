@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -12,6 +13,7 @@ export default function SignupPage() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -20,26 +22,29 @@ export default function SignupPage() {
 
     setLoading(true);
     setError("");
+    setMessage("");
 
     const { data, error: signupError } = await supabase.auth.signUp({
-      email,
+      email: email.trim(),
       password,
+      options: {
+        data: {
+          username: username.trim().toLowerCase(),
+          display_name: displayName.trim(),
+        },
+      },
     });
 
-    if (signupError || !data.user) {
-      setError(signupError?.message ?? "Unable to create account.");
+    if (signupError) {
+      setError(signupError.message);
       setLoading(false);
       return;
     }
 
-    const { error: profileError } = await supabase.from("profiles").insert({
-      id: data.user.id,
-      username: username.trim().toLowerCase(),
-      display_name: displayName.trim(),
-    });
-
-    if (profileError) {
-      setError(profileError.message);
+    if (!data.session) {
+      setMessage(
+        "Account created. Check your email to confirm your account.",
+      );
       setLoading(false);
       return;
     }
@@ -49,7 +54,7 @@ export default function SignupPage() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center px-4">
+    <main className="flex min-h-screen items-center justify-center px-4 py-12">
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-md rounded-2xl border border-border bg-surface p-8 shadow-sm"
@@ -80,6 +85,7 @@ export default function SignupPage() {
             required
             minLength={3}
             maxLength={30}
+            pattern="[A-Za-z0-9_]+"
             className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm outline-none focus:border-border-strong"
           />
 
@@ -104,6 +110,8 @@ export default function SignupPage() {
 
           {error && <p className="text-sm text-danger">{error}</p>}
 
+          {message && <p className="text-sm text-muted">{message}</p>}
+
           <button
             type="submit"
             disabled={loading}
@@ -111,6 +119,16 @@ export default function SignupPage() {
           >
             {loading ? "Creating account..." : "Create account"}
           </button>
+
+          <p className="text-center text-sm text-muted">
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              className="font-semibold text-foreground hover:underline"
+            >
+              Sign in
+            </Link>
+          </p>
         </div>
       </form>
     </main>

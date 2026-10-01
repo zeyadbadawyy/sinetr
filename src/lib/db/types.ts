@@ -5,6 +5,7 @@ import type {
 
 import {
   exercises,
+  exerciseMuscles,
   profiles,
   programWorkouts,
   programs,
@@ -18,6 +19,9 @@ export type NewProfile = InferInsertModel<typeof profiles>;
 
 export type Exercise = InferSelectModel<typeof exercises>;
 export type NewExercise = InferInsertModel<typeof exercises>;
+
+export type ExerciseMuscle = InferSelectModel<typeof exerciseMuscles>;
+export type NewExerciseMuscle = InferInsertModel<typeof exerciseMuscles>;
 
 export type Program = InferSelectModel<typeof programs>;
 export type NewProgram = InferInsertModel<typeof programs>;
