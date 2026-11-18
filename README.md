@@ -16,36 +16,6 @@ The current foundation allows users to create training programs, organize workou
 
 The project is being developed incrementally, with an emphasis on building a dependable foundation before expanding into more advanced features.
 
-## Features
-
-### Authentication
-- User registration and login
-- Protected application routes
-- User-specific data and workout records
-
-### Exercise Library
-- Browse available exercises
-- Exercise categories and equipment information
-- Individual exercise pages
-
-### Training Programs
-- Create and manage training programs
-- Organize programs into workout days
-- Add, edit, remove, and reorder exercises
-- Configure target sets, repetitions, and rest periods
-
-### Workout Tracking
-- Start and resume unfinished workouts
-- Record sets, weights, and repetitions
-- Save workout performance
-- Complete workout sessions
-- View previous performance while training
-
-### Workout History
-- Browse completed workout sessions
-- Review individual workout records
-- Inspect recorded sets and performance
-
 ## Tech Stack
 
 | Area | Technology |
