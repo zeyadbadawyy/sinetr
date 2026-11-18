@@ -3,6 +3,8 @@ import { AppShell } from "@/components/layout/AppShell";
 import { Card } from "@/components/ui/Card";
 import { getPublicExercises } from "@/lib/db/queries/exercises";
 
+export const dynamic = "force-dynamic";
+
 export default async function ExercisesPage() {
   const exercises = await getPublicExercises();
 

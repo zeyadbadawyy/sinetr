@@ -1,6 +1,7 @@
 import {
   boolean,
   integer,
+  numeric,
   pgEnum,
   pgTable,
   text,
@@ -204,7 +205,7 @@ export const sets = pgTable("sets", {
     .notNull()
     .references(() => exercises.id, { onDelete: "restrict" }),
   setNumber: integer("set_number").notNull(),
-  weight: integer("weight"),
+  weight: numeric("weight", { precision: 8, scale: 2 }),
   reps: integer("reps"),
   durationSeconds: integer("duration_seconds"),
   distance: integer("distance"),

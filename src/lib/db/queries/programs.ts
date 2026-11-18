@@ -1,10 +1,13 @@
-import { asc, eq, inArray } from "drizzle-orm";
+import { and, asc, eq, inArray, isNull } from "drizzle-orm";
+
 import { db } from "@/lib/db";
+
 import {
   exercises,
   programWorkouts,
   programs,
   workoutExercises,
+  workoutSessions,
 } from "@/lib/db/schema";
 
 export async function getProgramsByCreator(creatorId: string) {
@@ -23,7 +26,10 @@ export async function getPublicPrograms() {
     .orderBy(asc(programs.name));
 }
 
-export async function getProgramById(programId: string) {
+export async function getProgramById(
+  programId: string,
+  profileId?: string,
+) {
   const program = await db
     .select()
     .from(programs)
@@ -58,13 +64,43 @@ export async function getProgramById(programId: string) {
           .where(inArray(workoutExercises.workoutId, workoutIds))
           .orderBy(asc(workoutExercises.orderIndex));
 
+  const activeSessions =
+    profileId && workoutIds.length > 0
+      ? await db
+          .select({
+            id: workoutSessions.id,
+            programWorkoutId:
+              workoutSessions.programWorkoutId,
+          })
+          .from(workoutSessions)
+          .where(
+            and(
+              eq(workoutSessions.profileId, profileId),
+              inArray(
+                workoutSessions.programWorkoutId,
+                workoutIds,
+              ),
+              isNull(workoutSessions.completedAt),
+            ),
+          )
+      : [];
+
   return {
     ...program[0],
+
     workouts: workouts.map((workout) => ({
       ...workout,
+
+      activeSessionId:
+        activeSessions.find(
+          (session) =>
+            session.programWorkoutId === workout.id,
+        )?.id ?? null,
+
       exercises: workoutExerciseRows
         .filter(
-          (row) => row.workoutExercise.workoutId === workout.id,
+          (row) =>
+            row.workoutExercise.workoutId === workout.id,
         )
         .map((row) => ({
           ...row.workoutExercise,

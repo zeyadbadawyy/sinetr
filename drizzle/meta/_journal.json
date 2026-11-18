@@ -15,6 +15,13 @@
       "when": 1790890584909,
       "tag": "0001_exercise_domain",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791321684299,
+      "tag": "0002_dark_felicia_hardy",
+      "breakpoints": true
     }
   ]
 }
